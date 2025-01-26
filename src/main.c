@@ -59,10 +59,14 @@ void GameEnd(void);
 
 void UnsetDogAt(int);
 void SetDogAt(int, Vector2, float);
+
 void DrawDog(void);
 void DrawBone(void);
+void DrawGameOver(void);
+
 void SpawnDog(void);
 void UpdateDogs(void);
+
 Vector2 GetBonePosition(void);
 
 int main ()
@@ -145,6 +149,23 @@ void DrawBone(void)
 	position.y -= BONE_SOURCE_HEIGHT / 2;
 
 	DrawTextureRec(_atlasBone, BONE_SOURCE_RECTANGLE, position,WHITE);
+}
+
+void DrawGameOver(void)
+{
+	const char* gameOverText = TextFormat("Game Over!");
+	const char* pressRtoRestartText = TextFormat("Pres R to restart..");
+
+	DrawRectangle(0,0,screenWidth,screenHeight, Fade(WHITE,0.8f));
+	DrawText(gameOverText, screenWidth / 2 - MeasureText(gameOverText,40) / 2,screenHeight /2 - 10,40,DARKGRAY);
+	DrawText(pressRtoRestartText, screenWidth / 2 - MeasureText(pressRtoRestartText,20) / 2,screenHeight * 0.75f - 10,20,DARKGRAY);
+
+	const char* scoreText = TextFormat("SCORE: %d", _score);
+	DrawText(scoreText, screenWidth / 2 - MeasureText(scoreText,40) / 2,screenHeight / 2 - 60,40,DARKGRAY);
+
+	int minutes = (int) (_timeGameEnded -  _timeGameStarted) / 60;
+	int seconds = (int) (_timeGameEnded - _timeGameStarted) % 60;
+	DrawText(TextFormat("Time played: %d minutes, %d seconds.", minutes, seconds), 20, screenHeight - 40, 20, DARKGRAY);
 }
 
 void SpawnDog(void)
@@ -245,8 +266,7 @@ void UpdateDrawFrame(void)
 		DrawBone();
 		if(_state == END)
 		{
-			const char* gameOverText = TextFormat("Game Over!");
-			DrawText(gameOverText, screenWidth / 4,screenHeight /2,64,RED);
+			DrawGameOver();
 		}
 		else
 		{
