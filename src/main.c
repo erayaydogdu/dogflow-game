@@ -17,6 +17,8 @@
 #define RUN_SPEED_MIN 100
 #define RUN_SPEED_MAX 400
 #define TIME_BETWEEN_DOGS 1.0f
+#define INITIAL_LIVES 3
+#define POINT_PER_DOG 100
 
 const int screenWidth = 600;
 const int screenHeight = 600;
@@ -47,6 +49,9 @@ Texture2D _atlasDog;
 Texture2D _atlasBone;
 
 float _nextDogTimer;
+int _score;
+int _lives;
+
 
 void GameInit(void);
 void UpdateDrawFrame(void);
@@ -87,6 +92,10 @@ void GameInit(void)
 	_state = PLAYING;
 	_timeGameStarted = GetTime();
 	_nextDogTimer = TIME_BETWEEN_DOGS;
+
+	_lives = INITIAL_LIVES;
+	_score = 0;
+
 	for (int i = 0; i < DOG_MAX_COUNT; i++)
 	{
 		UnsetDogAt(i);
@@ -95,7 +104,7 @@ void GameInit(void)
 
 void GameEnd(void)
 {
-	_state = PLAYING;
+	_state = END;
 	_timeGameEnded = GetTime();
 }
 
@@ -168,7 +177,15 @@ void UpdateDogs(void)
 		if(_dogs[i].position.y > screenHeight + DOG_SOURCE_HEIGHT / 2)
 		{
 			UnsetDogAt(i);
-			//TODO: calculate the points etc?
+			
+			//calculate the points etc
+			_lives--;
+			if(_lives <=0)
+			{
+				GameEnd();
+				return;
+			}
+			
 			continue;
 		}
 
@@ -177,8 +194,8 @@ void UpdateDogs(void)
 			fabsf(_dogs[i].position.y - bonePosition.y) < BONE_SOURCE_HEIGHT / 2)
 		{
 			UnsetDogAt(i);
-			//TODO: get point
-
+			//get point or score etc
+			_score += POINT_PER_DOG;
 			continue;
 		}
 
@@ -198,20 +215,26 @@ void UpdateDrawFrame(void)
 	{
 		GameInit();
 	}
+	//TODO: Add pause mod
 
 	// if (win condition)
 	// {
 	// 	GameEnd
 	// }
-	
-	UpdateDogs();
-	
-	_nextDogTimer -= GetFrameTime();
-	if (_nextDogTimer < 0)
+
+	if (_state == PLAYING)
 	{
-		_nextDogTimer = TIME_BETWEEN_DOGS;
-		SpawnDog();
+		UpdateDogs();
+		_nextDogTimer -= GetFrameTime();
+		if (_nextDogTimer < 0)
+		{
+			_nextDogTimer = TIME_BETWEEN_DOGS;
+			SpawnDog();
+		}
 	}
+	
+	
+
 	
 
 	BeginDrawing();
@@ -222,11 +245,16 @@ void UpdateDrawFrame(void)
 		DrawBone();
 		if(_state == END)
 		{
-			//TODO: Gameover
+			const char* gameOverText = TextFormat("Game Over!");
+			DrawText(gameOverText, screenWidth / 4,screenHeight /2,64,RED);
 		}
 		else
 		{
 			//TODO: Gametime
+			const char* scoreText = TextFormat("SCORE: %d", _score);
+			const char* livesText = TextFormat("LIVES: %d", _lives);
+			DrawText(scoreText, 0,0,32,BLACK);
+			DrawText(livesText, 0,48,24,DARKGRAY);
 		}
 	EndDrawing();
 
