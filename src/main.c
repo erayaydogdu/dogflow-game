@@ -14,8 +14,9 @@
 #define BONE_SOURCE_HEIGHT 41
 #define BONE_SOURCE_RECTANGLE CLITERAL(Rectangle){0,0,BONE_SOURCE_WIDTH,BONE_SOURCE_HEIGHT}
 
-#define RUN_SPEED_MIN 50
-#define RUN_SPEED_MAX 250
+#define RUN_SPEED_MIN 100
+#define RUN_SPEED_MAX 400
+#define TIME_BETWEEN_DOGS 1.0f
 
 const int screenWidth = 600;
 const int screenHeight = 600;
@@ -45,6 +46,8 @@ float _timeGameEnded;
 Texture2D _atlasDog;
 Texture2D _atlasBone;
 
+float _nextDogTimer;
+
 void GameInit(void);
 void UpdateDrawFrame(void);
 void GameEnd(void);
@@ -55,7 +58,7 @@ void DrawDog(void);
 void DrawBone(void);
 void SpawnDog(void);
 void UpdateDogs(void);
-
+Vector2 GetBonePosition(void);
 
 int main ()
 {
@@ -83,6 +86,7 @@ void GameInit(void)
 {
 	_state = PLAYING;
 	_timeGameStarted = GetTime();
+	_nextDogTimer = TIME_BETWEEN_DOGS;
 	for (int i = 0; i < DOG_MAX_COUNT; i++)
 	{
 		UnsetDogAt(i);
@@ -127,7 +131,7 @@ void DrawDog(void)
 
 void DrawBone(void)
 {
-	Vector2 position = {GetMousePosition().x, screenHeight - BONE_SOURCE_HEIGHT * 2};
+	Vector2 position = GetBonePosition();
 	position.x -= BONE_SOURCE_WIDTH / 2;
 	position.y -= BONE_SOURCE_HEIGHT / 2;
 
@@ -168,9 +172,24 @@ void UpdateDogs(void)
 			continue;
 		}
 
+		Vector2 bonePosition = GetBonePosition();
+		if(fabsf(_dogs[i].position.x - bonePosition.x) < BONE_SOURCE_WIDTH / 2 &&
+			fabsf(_dogs[i].position.y - bonePosition.y) < BONE_SOURCE_HEIGHT / 2)
+		{
+			UnsetDogAt(i);
+			//TODO: get point
+
+			continue;
+		}
+
 		float offset = _dogs[i].runningSpeed * GetFrameTime();
 		_dogs[i].position.y += offset;
 	}
+}
+
+Vector2 GetBonePosition()
+{
+    return (Vector2){GetMousePosition().x, screenHeight - BONE_SOURCE_HEIGHT * 2};
 }
 
 void UpdateDrawFrame(void)
@@ -178,11 +197,6 @@ void UpdateDrawFrame(void)
 	if (_state == END && IsKeyPressed(KEY_R))
 	{
 		GameInit();
-	}
-	
-	if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-	{
-		SpawnDog();
 	}
 
 	// if (win condition)
@@ -192,6 +206,14 @@ void UpdateDrawFrame(void)
 	
 	UpdateDogs();
 	
+	_nextDogTimer -= GetFrameTime();
+	if (_nextDogTimer < 0)
+	{
+		_nextDogTimer = TIME_BETWEEN_DOGS;
+		SpawnDog();
+	}
+	
+
 	BeginDrawing();
 		ClearBackground(RAYWHITE);
 
