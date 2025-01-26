@@ -10,6 +10,10 @@
 #define DOG_MAX_COUNT 8
 #define DOG_SOURCE_RECTANGLE CLITERAL(Rectangle){0,0,DOG_SOURCE_WIDTH,DOG_SOURCE_HEIGHT}
 
+#define BONE_SOURCE_WIDTH 100
+#define BONE_SOURCE_HEIGHT 41
+#define BONE_SOURCE_RECTANGLE CLITERAL(Rectangle){0,0,BONE_SOURCE_WIDTH,BONE_SOURCE_HEIGHT}
+
 #define RUN_SPEED_MIN 50
 #define RUN_SPEED_MAX 250
 
@@ -39,6 +43,7 @@ float _timeGameStarted;
 float _timeGameEnded;
 
 Texture2D _atlasDog;
+Texture2D _atlasBone;
 
 void GameInit(void);
 void UpdateDrawFrame(void);
@@ -47,7 +52,7 @@ void GameEnd(void);
 void UnsetDogAt(int);
 void SetDogAt(int, Vector2, float);
 void DrawDog(void);
-void DrawTbone(void);
+void DrawBone(void);
 void SpawnDog(void);
 void UpdateDogs(void);
 
@@ -59,6 +64,7 @@ int main ()
 	InitWindow(screenWidth, screenHeight, "Sitaroid Game");
 
 	_atlasDog = LoadTexture("resources/dog_alpha.png");
+	_atlasBone = LoadTexture("resources/dog_bone.png");
 
 	GameInit();
 	
@@ -117,6 +123,15 @@ void DrawDog(void)
 		DrawTextureRec(_atlasDog, DOG_SOURCE_RECTANGLE, position,WHITE);
 	}
 	
+}
+
+void DrawBone(void)
+{
+	Vector2 position = {GetMousePosition().x, screenHeight - BONE_SOURCE_HEIGHT * 2};
+	position.x -= BONE_SOURCE_WIDTH / 2;
+	position.y -= BONE_SOURCE_HEIGHT / 2;
+
+	DrawTextureRec(_atlasBone, BONE_SOURCE_RECTANGLE, position,WHITE);
 }
 
 void SpawnDog(void)
@@ -182,6 +197,7 @@ void UpdateDrawFrame(void)
 
 		// Draw Game
 		DrawDog();
+		DrawBone();
 		if(_state == END)
 		{
 			//TODO: Gameover
