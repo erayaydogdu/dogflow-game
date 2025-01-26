@@ -5,6 +5,7 @@
 
 typedef struct Dog
 {
+	int id;
 	Vector2 position;
 	int runningSpeed;
 

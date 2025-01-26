@@ -20,6 +20,7 @@ float _timeGameEnded;
 
 Texture2D _atlasDog;
 Texture2D _atlasBone;
+Texture2D _atlasDogSprite;
 
 float _nextDogTimer;
 
@@ -41,6 +42,7 @@ int main ()
 
 	_atlasDog = LoadTexture("resources/dog_alpha.png");
 	_atlasBone = LoadTexture("resources/dog_bone.png");
+	_atlasDogSprite = LoadTexture("resources/dogs_sprite.png");
 
 	GameInit(_dogs);
 	
@@ -52,6 +54,7 @@ int main ()
 
 	UnloadTexture(_atlasDog);
 	UnloadTexture(_atlasBone);
+	UnloadTexture(_atlasDogSprite);
 
 	CloseWindow();
 	return 0;

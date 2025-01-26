@@ -8,6 +8,7 @@
 #include <math.h>
 
 extern Texture2D _atlasDog;
+extern Texture2D _atlasDogSprite;
 extern void GameEnd(void);
 
 void UnsetDogAt(Dog* dogs,int i)
@@ -24,20 +25,43 @@ void SetDogAt(Dog* dogs,int i, Vector2 position, float runSpeed)
 	dogs[i].position = position;
 	dogs[i].runningSpeed = runSpeed;
 	dogs[i]._active = true;
+	dogs[i].id = GetRandomValue(1,(DOG_SPRITE_COLUMN * DOG_SPRITE_ROW));
 }
+
+// void DrawDogs(Dog* dogs)
+// {
+// 	for (int i = 0; i < DOG_MAX_COUNT; i++)
+// 	{
+// 		if(!dogs[i]._active) continue;
+
+// 		Vector2 position = dogs[i].position;
+// 		position.x -= DOG_SOURCE_WIDTH / 2; 
+// 		position.y -= DOG_SOURCE_HEIGHT / 2; 
+// 		DrawTextureRec(_atlasDogSprite, DOG_SOURCE_RECTANGLE, position,WHITE);
+
+// 	}
+	
+// }
 
 void DrawDogs(Dog* dogs)
 {
-	for (int i = 0; i < DOG_MAX_COUNT; i++)
-	{
-		if(!dogs[i]._active) continue;
+    
+    for (int i = 0; i < DOG_MAX_COUNT; i++)
+    {
+        if (!dogs[i]._active) continue;
 
-		Vector2 position = dogs[i].position;
-		position.x -= DOG_SOURCE_WIDTH / 2; 
-		position.y -= DOG_SOURCE_HEIGHT / 2; 
-		DrawTextureRec(_atlasDog, DOG_SOURCE_RECTANGLE, position,WHITE);
-	}
-	
+        Vector2 position = dogs[i].position;
+        position.x -= DOG_SOURCE_WIDTH / 2;
+        position.y -= DOG_SOURCE_HEIGHT / 2;
+
+        int column = dogs[i].id % DOG_SPRITE_COLUMN;
+        int row = dogs[i].id / DOG_SPRITE_ROW;
+
+		Rectangle sourceDog = (Rectangle){column * DOG_SPRITE_ITEM_WIDTH,row * DOG_SPRITE_ITEM_HEIGHT,DOG_SPRITE_ITEM_WIDTH,DOG_SPRITE_ITEM_HEIGHT};
+		Rectangle destDog = (Rectangle){position.x,position.y,DOG_SOURCE_WIDTH,DOG_SOURCE_HEIGHT};
+
+        DrawTexturePro(_atlasDogSprite, sourceDog, destDog, (Vector2){0, 0},0, WHITE);
+    }
 }
 
 void SpawnDog(Dog* dogs)
