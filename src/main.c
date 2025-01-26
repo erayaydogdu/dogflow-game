@@ -93,6 +93,7 @@ int main ()
 
 void GameInit(void)
 {
+	HideCursor();
 	_state = PLAYING;
 	_timeGameStarted = GetTime();
 	_nextDogTimer = TIME_BETWEEN_DOGS;
@@ -108,6 +109,7 @@ void GameInit(void)
 
 void GameEnd(void)
 {
+	ShowCursor();
 	_state = END;
 	_timeGameEnded = GetTime();
 }
