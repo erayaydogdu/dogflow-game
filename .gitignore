@@ -1,0 +1,51 @@
+# Compiled object files
+*.o
+
+# Compiled dynamic libraries
+*.so
+
+# Compiled static libraries
+*.a
+
+# Compiled executables
+*.exe
+*.out
+*.app
+
+# Backup files
+*~
+*.bak
+*.tmp
+
+# Debug files
+*.log
+*.dSYM/
+*.stackdump
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.user
+*.db
+
+# Dependency files (e.g., Makefile dependencies)
+*.d
+
+# Raylib generated assets or temporary files
+assets/tmp/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore CMake files (if applicable)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore pkg-config generated files (if applicable)
+*.pc
