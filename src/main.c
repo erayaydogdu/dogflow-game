@@ -51,7 +51,7 @@ Texture2D _atlasBone;
 float _nextDogTimer;
 int _score;
 int _lives;
-
+float _boneXPosition;
 
 void GameInit(void);
 void UpdateDrawFrame(void);
@@ -229,7 +229,11 @@ void UpdateDogs(void)
 
 Vector2 GetBonePosition()
 {
-    return (Vector2){GetMousePosition().x, screenHeight - BONE_SOURCE_HEIGHT * 2};
+	if(_state== PLAYING)
+	{
+		_boneXPosition = GetMousePosition().x;
+	}
+    return (Vector2){_boneXPosition, screenHeight - BONE_SOURCE_HEIGHT * 2};
 }
 
 void UpdateDrawFrame(void)
