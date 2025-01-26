@@ -49,3 +49,5 @@ Makefile
 
 # Ignore pkg-config generated files (if applicable)
 *.pc
+
+bin/Debug/
