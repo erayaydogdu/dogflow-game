@@ -2,7 +2,7 @@
 
 #include "defines.h"
 #include "score.h"
-#include "bone.h"
+#include "bed.h"
 #include "gamestate.h"
 
 #include <math.h>
@@ -27,21 +27,6 @@ void SetDogAt(Dog* dogs,int i, Vector2 position, float runSpeed)
 	dogs[i]._active = true;
 	dogs[i].id = GetRandomValue(1,(DOG_SPRITE_COLUMN * DOG_SPRITE_ROW));
 }
-
-// void DrawDogs(Dog* dogs)
-// {
-// 	for (int i = 0; i < DOG_MAX_COUNT; i++)
-// 	{
-// 		if(!dogs[i]._active) continue;
-
-// 		Vector2 position = dogs[i].position;
-// 		position.x -= DOG_SOURCE_WIDTH / 2; 
-// 		position.y -= DOG_SOURCE_HEIGHT / 2; 
-// 		DrawTextureRec(_atlasDogSprite, DOG_SOURCE_RECTANGLE, position,WHITE);
-
-// 	}
-	
-// }
 
 void DrawDogs(Dog* dogs)
 {
@@ -105,9 +90,9 @@ void UpdateDogs(Dog* dogs)
 			continue;
 		}
 
-		Vector2 bonePosition = GetBonePosition();
-		if(fabsf(dogs[i].position.x - bonePosition.x) < BONE_SOURCE_WIDTH / 2 &&
-			fabsf(dogs[i].position.y - bonePosition.y) < BONE_SOURCE_HEIGHT / 2)
+		Vector2 bedPosition = GetBedPosition();
+		if(fabsf(dogs[i].position.x - bedPosition.x) < BED_SOURCE_WIDTH / 2 &&
+			fabsf(dogs[i].position.y - bedPosition.y) < BED_SOURCE_HEIGHT / 3)
 		{
 			UnsetDogAt(dogs,i);
 			//get point or score etc

@@ -7,6 +7,7 @@ int GetScore(void);
 int GetLives(void);
 
 void AddScore(int);
+void AddLives(int);
 bool RemoveLives(int);
 
 void ResetScore(void);

@@ -3,6 +3,18 @@
 
 #include "raylib.h"
 
-Vector2 GetBonePosition(void);
-void DrawBone(void);
+typedef struct Bone
+{
+	int bonusLife;
+	Vector2 position;
+	int velocity;
+
+	bool _active;
+}Bone;
+
+void UnsetBone(Bone*);
+void DrawBone(Bone*);
+void SpawnBone(Bone*);
+void UpdateBone(Bone*);
+
 #endif

@@ -7,52 +7,51 @@
 
 #include "defines.h"
 #include "dogs.h"
+#include "bed.h"
 #include "bone.h"
 #include "score.h"
 #include "gamestate.h"
 
 Dog _dogs[DOG_MAX_COUNT];
-
-
-
+Bone _bone;
 float _timeGameStarted;
 float _timeGameEnded;
 
-Texture2D _atlasDog;
+//Texture2D _atlasDog;
+Texture2D _atlasBed;
 Texture2D _atlasBone;
 Texture2D _atlasDogSprite;
 
 float _nextDogTimer;
 
 
-void GameInit(Dog*);
+void GameInit(Dog*, Bone*);
 void UpdateDrawFrame(void);
 void GameEnd(void);
 
 void DrawGameOver(void);
 
-
-
-
 int main ()
 {
 	srand(time(0));
-
+	
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sitaroid Game");
-
-	_atlasDog = LoadTexture("resources/dog_alpha.png");
+	
+	//_atlasDog = LoadTexture("resources/dog_alpha.png");
 	_atlasBone = LoadTexture("resources/dog_bone.png");
+	_atlasBed = LoadTexture("resources/dog_bed.png");
 	_atlasDogSprite = LoadTexture("resources/dogs_sprite.png");
 
-	GameInit(_dogs);
+	GameInit(_dogs,&_bone);
 	
 	// game loop
-	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
+	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
 		UpdateDrawFrame();
 	}
 
-	UnloadTexture(_atlasDog);
+	//UnloadTexture(_atlasDog);
+	UnloadTexture(_atlasBed);
 	UnloadTexture(_atlasBone);
 	UnloadTexture(_atlasDogSprite);
 
@@ -61,7 +60,7 @@ int main ()
 }
 
 
-void GameInit(Dog* dogs)
+void GameInit(Dog* dogs, Bone* bone)
 {
 	HideCursor();
 
@@ -70,23 +69,21 @@ void GameInit(Dog* dogs)
 	_nextDogTimer = TIME_BETWEEN_DOGS;
 
 	ResetScore();
-
+	UnsetBone(bone);
 	for (int i = 0; i < DOG_MAX_COUNT; i++)
 	{
 		UnsetDogAt(dogs,i);
 	}
+
+	
 }
 
 void GameEnd(void)
 {
 	ShowCursor();
-	//_state = END;
 	SetGameState(END);
 	_timeGameEnded = GetTime();
 }
-
-
-
 
 void DrawGameOver(void)
 {
@@ -109,7 +106,7 @@ void UpdateDrawFrame(void)
 {
 	if (GetGameState() == END && IsKeyPressed(KEY_R))
 	{
-		GameInit(_dogs);
+		GameInit(_dogs, &_bone);
 	}
 	//TODO: Add pause mod
 
@@ -120,12 +117,20 @@ void UpdateDrawFrame(void)
 
 	if (GetGameState() == PLAYING)
 	{
+		UpdateBone(&_bone);
 		UpdateDogs(_dogs);
 		_nextDogTimer -= GetFrameTime();
 		if (_nextDogTimer < 0)
 		{
 			_nextDogTimer = TIME_BETWEEN_DOGS;
 			SpawnDog(_dogs);
+		}
+
+		//Calculate score and every 10xPOINT_PER_DOG, spawn a bone
+		int currentScore = GetScore();
+		if (currentScore > 0 && currentScore % (10 * POINT_PER_DOG) == 0)
+		{
+			SpawnBone(&_bone);
 		}
 	}
 	
@@ -134,7 +139,8 @@ void UpdateDrawFrame(void)
 
 		// Draw Game
 		DrawDogs(_dogs);
-		DrawBone();
+		DrawBone(&_bone);
+		DrawBed();
 		if(GetGameState() == END)
 		{
 			DrawGameOver();

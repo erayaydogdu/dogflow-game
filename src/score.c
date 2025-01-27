@@ -18,6 +18,11 @@ void AddScore(int score)
 {
     _score += score;
 }
+void AddLives(int live)
+{
+    _lives += live;
+}
+
 bool RemoveLives(int live)
 {
     _lives -= live;
